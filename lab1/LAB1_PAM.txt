@@ -1,0 +1,10 @@
+Laborator 1
+
+Introducerea in programarea cross platform utilizind Flutter framework.
+Utilizarea de Componente UI simple (UI controls) si evenimente asupra lor.
+
+Varianta 5. Calculator salariu
+Realizați o aplicație mobilă care calculează salariul net pornind de la salariul brut.
+Input: salariul brut – TextField
+UI controls: RadioButton sau DropdownButton pentru selectarea tipului de angajat/impozitare, ElevatedButton
+Output: salariul net și suma impozitelor afișate în Text.
