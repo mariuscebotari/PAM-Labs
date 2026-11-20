@@ -35,14 +35,20 @@ class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
 
         return CatalogModel.fromApiJson(feedJson, detailsJson);
       } else {
-        throw ServerException('Server returned HTTP ${feedResponse.statusCode}');
+        throw ServerException(
+          'Serverul a returnat codul HTTP ${feedResponse.statusCode}',
+        );
       }
     } on ServerException {
       rethrow;
+    } on ParseException {
+      rethrow;
     } on FormatException {
-      throw ParseException('Eroare la procesarea răspunsului JSON.');
+      throw ParseException('Eroare la procesarea răspunsului JSON de la server.');
     } catch (e) {
-      throw NetworkException('Eroare de rețea la conectarea la REST API: $e');
+      throw NetworkException(
+        'Nu s-a putut stabili conexiunea cu serverul. Verifică conexiunea la internet (Wi-Fi).',
+      );
     }
   }
 
@@ -56,14 +62,20 @@ class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
           json['product'] as Map<String, dynamic>,
         );
       } else {
-        throw ServerException('Server returned HTTP ${response.statusCode}');
+        throw ServerException(
+          'Serverul a returnat codul HTTP ${response.statusCode}',
+        );
       }
     } on ServerException {
       rethrow;
+    } on ParseException {
+      rethrow;
     } on FormatException {
-      throw ParseException('Eroare la procesarea răspunsului JSON.');
+      throw ParseException('Eroare la procesarea răspunsului JSON de la server.');
     } catch (e) {
-      throw NetworkException('Eroare de rețea la conectarea la REST API: $e');
+      throw NetworkException(
+        'Nu s-a putut stabili conexiunea cu serverul. Verifică conexiunea la internet (Wi-Fi).',
+      );
     }
   }
 }
