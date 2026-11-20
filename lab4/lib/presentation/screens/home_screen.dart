@@ -10,11 +10,30 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CatalogCubit, CatalogState>(
+    return BlocConsumer<CatalogCubit, CatalogState>(
+      listener: (context, state) {
+        if (state.status == CatalogStatus.error && state.error != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error!),
+              backgroundColor: Colors.red[700],
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 4),
+              action: SnackBarAction(
+                label: 'Reîncearcă',
+                textColor: Colors.white,
+                onPressed: () {
+                  context.read<CatalogCubit>().loadCatalog();
+                },
+              ),
+            ),
+          );
+        }
+      },
       builder: (context, state) {
         final catalog = state.catalog;
 
-        if (state.status == CatalogStatus.loading) {
+        if (state.status == CatalogStatus.loading && catalog == null) {
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(color: Colors.deepPurple),
@@ -22,7 +41,7 @@ class HomeScreen extends StatelessWidget {
           );
         }
 
-        if (state.status == CatalogStatus.error || catalog == null) {
+        if (state.status == CatalogStatus.error && catalog == null) {
           return Scaffold(
             appBar: AppBar(title: const Text('GemStore')),
             body: Center(
@@ -36,23 +55,54 @@ class HomeScreen extends StatelessWidget {
                     Text(
                       state.error ?? 'A apărut o eroare necunoscută.',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16, color: Colors.black87),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Verifică conexiunea la internet (Wi-Fi) și apasă pe butonul de mai jos.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 13, color: Colors.grey),
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.deepPurple,
                         foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                       onPressed: () {
                         context.read<CatalogCubit>().loadCatalog();
                       },
                       icon: const Icon(Icons.refresh),
-                      label: const Text('Reîncearcă'),
+                      label: const Text(
+                        'Reîncearcă',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
+            ),
+          );
+        }
+
+        if (catalog == null) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(color: Colors.deepPurple),
             ),
           );
         }
@@ -115,7 +165,7 @@ class HomeScreen extends StatelessWidget {
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                           colors: [
-                            Colors.black.withOpacity(0.6),
+                            Colors.black.withValues(alpha: 0.6),
                             Colors.transparent,
                           ],
                         ),
@@ -291,7 +341,7 @@ class HomeScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withOpacity(0.03),
+                                        color: Colors.black.withValues(alpha: 0.03),
                                         blurRadius: 4,
                                         offset: const Offset(0, 2),
                                       ),
@@ -409,7 +459,7 @@ class HomeScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(16),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withOpacity(0.04),
+                                        color: Colors.black.withValues(alpha: 0.04),
                                         blurRadius: 6,
                                         offset: const Offset(0, 3),
                                       ),
@@ -454,7 +504,7 @@ class HomeScreen extends StatelessWidget {
                                                 },
                                                 child: CircleAvatar(
                                                   backgroundColor: Colors.white
-                                                      .withOpacity(0.8),
+                                                      .withValues(alpha: 0.8),
                                                   radius: 16,
                                                   child: Icon(
                                                     isFavorite
